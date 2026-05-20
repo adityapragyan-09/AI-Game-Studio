@@ -1,0 +1,8 @@
+crewai
+crewai-tools
+streamlit
+python-dotenv
+langchain-google-genai
+google-generativeai
+pygame==2.5.2
+numpy
