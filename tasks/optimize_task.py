@@ -1,5 +1,12 @@
+"""
+Optimization Task for AI Game Studio.
+
+Optimizes the pygame game code for performance, stability, and quality.
+"""
+
 from crewai import Task
 from agents.optimizer import optimizer
+from models.game_output import OptimizationTaskOutput
 
 optimize_task = Task(
     description="""
@@ -37,5 +44,6 @@ optimize_task = Task(
     - The output must be directly saveable as a .py file and runnable
     """,
     expected_output="Final optimized pygame code as clean executable Python only. No markdown, no explanations, no backticks.",
-    agent=optimizer
+    agent=optimizer,
+    output_pydantic=OptimizationTaskOutput,
 )

@@ -1,5 +1,12 @@
+"""
+Development Task for AI Game Studio.
+
+Generates a complete playable pygame game based on the game concept provided.
+"""
+
 from crewai import Task
 from agents.developer import game_developer
+from models.game_output import DevelopmentTaskOutput
 
 develop_task = Task(
     description="""
@@ -47,5 +54,6 @@ develop_task = Task(
     - if __name__ == "__main__": main()
     """,
     expected_output="Complete executable Python pygame game code. Raw Python only, no markdown, no explanations.",
-    agent=game_developer
+    agent=game_developer,
+    output_pydantic=DevelopmentTaskOutput,
 )

@@ -1,5 +1,12 @@
+"""
+QA Task for AI Game Studio.
+
+Reviews and fixes the generated pygame game code. This is the FINAL stage before saving.
+"""
+
 from crewai import Task
 from agents.qa import qa_engineer
+from models.game_output import QATaskOutput
 
 qa_task = Task(
     description="""
@@ -45,5 +52,6 @@ qa_task = Task(
     - The output must be a valid .py file that runs with: python game.py
     """,
     expected_output="Complete fixed pygame game as raw executable Python code. No markdown, no backticks, no explanations.",
-    agent=qa_engineer
+    agent=qa_engineer,
+    output_pydantic=QATaskOutput,
 )
