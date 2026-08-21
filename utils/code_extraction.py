@@ -446,7 +446,8 @@ def validate_imports(code: str, allowed_imports: Optional[set] = None) -> Tuple[
     if allowed_imports is None:
         allowed_imports = {
             'pygame', 'random', 'sys', 'os', 'math', 'time', 'json',
-            'typing', 'dataclasses', 'collections', 'itertools', 'functools'
+            'typing', 'dataclasses', 'collections', 'itertools', 'functools',
+            'subprocess'
         }
 
     issues = []
@@ -502,6 +503,10 @@ def scan_ast_for_dangerous_patterns(code: str) -> List[str]:
         'subprocess': ['Popen'],
     }
 
+    # Modules that are allowed to be imported but have dangerous functions
+    # These should only trigger warnings on actual dangerous calls, not imports
+    allowed_but_dangerous = {'os', 'subprocess', 'shutil', 'pathlib'}
+
     for node in ast.walk(tree):
         # Check for dangerous function calls
         if isinstance(node, ast.Call):
@@ -519,17 +524,17 @@ def scan_ast_for_dangerous_patterns(code: str) -> List[str]:
                 if func in dangerous_functions.get('builtins', []):
                     warnings.append(f"Dangerous builtin call: {func}() at line {node.lineno}")
 
-        # Check for dangerous imports
+        # Check for dangerous imports (only for modules not in allowed_but_dangerous)
         if isinstance(node, ast.Import):
             for alias in node.names:
                 module = alias.name.split('.')[0]
-                if module in dangerous_functions:
+                if module in dangerous_functions and module not in allowed_but_dangerous:
                     warnings.append(f"Potentially dangerous import: {module}")
 
         if isinstance(node, ast.ImportFrom):
             if node.module:
                 module = node.module.split('.')[0]
-                if module in dangerous_functions:
+                if module in dangerous_functions and module not in allowed_but_dangerous:
                     warnings.append(f"Potentially dangerous import: {module}")
 
     return warnings

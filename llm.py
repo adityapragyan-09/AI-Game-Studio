@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class LLMConfig:
     """Configuration for LLM provider."""
-    model: str = "gemini/gemini-2.5-flash"
+    model: str = "gemini/gemini-3.5-flash"
     api_key: Optional[str] = None
     timeout: int = 120  # seconds
     max_retries: int = 3

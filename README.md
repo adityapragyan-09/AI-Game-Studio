@@ -6,7 +6,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11+-green?style=for-the-badge)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.57-red?style=for-the-badge)
 ![CrewAI](https://img.shields.io/badge/CrewAI-0.144-orange?style=for-the-badge)
-![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-purple?style=for-the-badge)
+![Gemini](https://img.shields.io/badge/Gemini-3.5%20Flash-purple?style=for-the-badge)
 ![Pygame](https://img.shields.io/badge/Pygame-2.5-yellow?style=for-the-badge)
 
 ---
@@ -250,9 +250,11 @@ pytest tests/ -v
 # Run specific test module
 pytest tests/test_code_extraction.py -v
 pytest tests/test_validation.py -v
-pytest tests/test_security.py -v
+pytest tests/test_error_handling.py -v
+pytest tests/test_audio_safety.py -v
+pytest tests/test_retry.py -v
 
-# With coverage
+# With coverage (utility modules only)
 pytest tests/ --cov=utils --cov=agents --cov=tasks
 ```
 
@@ -260,12 +262,14 @@ pytest tests/ --cov=utils --cov=agents --cov=tasks
 
 | Module | Tests | Coverage |
 |--------|-------|----------|
-| Code Extraction | 20+ | 95%+ |
-| Error Handling | 12 | 90%+ |
-| Audio Safety | 7 | 85%+ |
-| Retry/Circuit Breaker | 10 | 90%+ |
-| Validation Integration | 5 | 95%+ |
-| **Total** | **75+** | **90%+** |
+| Code Extraction | 22 | ~95% |
+| Error Handling | 12 | ~90% |
+| Audio Safety | 7 | ~85% |
+| Retry/Circuit Breaker | 10 | ~90% |
+| Validation Integration | 5 | ~95% |
+| **Total (utility modules)** | **75** | **~95%** |
+
+> **Note**: The above coverage percentages apply to the measured utility modules (code extraction, validation, error handling, retry, audio safety). Full application coverage including the Streamlit UI (`app.py`), CrewAI orchestration (`crew.py`), and end-to-end pipeline is not currently measured.
 
 ### Key Test Categories
 
@@ -293,7 +297,7 @@ pytest tests/ --cov=utils --cov=agents --cov=tasks
 
 ```python
 LLMConfig(
-    model="gemini/gemini-2.5-flash",  # Model name
+    model="gemini/gemini-3.5-flash",  # Model name
     timeout=120,                       # Request timeout (seconds)
     max_retries=3,                     # Max retry attempts
     temperature=0.3,                   # Creativity (0.0-1.0)
@@ -388,8 +392,9 @@ CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0
 2. **Single-file games** — All code in one `.py` file (by design)
 3. **No external assets** — Pure pygame primitives only (by design)
 4. **Gemini dependency** — Requires API key; demo mode available without
-5. **Sequential pipeline** — ~30-60s generation time (4 API calls)
-6. **Python 3.11+** — Required for `ast.unparse` and modern typing
+5. **Sequential pipeline** — ~30-60s generation time (4 sequential agent API calls)
+6. **Gemini quota** — Live generation consumes multiple API requests per generation. The application includes rate limiting and Demo Mode to remain usable when live generation is unavailable.
+7. **Python 3.11+** — Required for `ast.unparse` and modern typing
 
 ---
 

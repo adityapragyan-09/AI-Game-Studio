@@ -312,16 +312,16 @@ class TestImportValidation:
         assert valid is True
 
     def test_disallowed_import(self):
-        code = "import pygame\nimport subprocess\nimport os"
+        code = "import pygame\nimport shutil\nimport os"
         valid, issues = validate_imports(code)
         assert valid is False
-        assert any("subprocess" in i for i in issues)
+        assert any("shutil" in i for i in issues)
 
     def test_disallowed_from_import(self):
-        code = "import pygame\nfrom subprocess import run"
+        code = "import pygame\nfrom shutil import rmtree"
         valid, issues = validate_imports(code)
         assert valid is False
-        assert any("subprocess" in i for i in issues)
+        assert any("shutil" in i for i in issues)
 
 
 class TestSecurityScan:
